@@ -59,6 +59,10 @@ function handleButtonPress(bpmValueElement: HTMLElement) {
   } else {
     // Subsequent presses - record the time
     state.buttonPresses.push(now)
+    
+    // Clean up old presses (older than 30 seconds) to prevent memory buildup
+    const thirtySecondsAgo = now - 30000
+    state.buttonPresses = state.buttonPresses.filter(time => time >= thirtySecondsAgo)
   }
   
   // Clear any existing timeout
@@ -83,10 +87,10 @@ function updateBPM(bpmValueElement: HTMLElement) {
   }
   
   const now = Date.now()
-  const tenSecondsAgo = now - 10000
+  const thirtySecondsAgo = now - 30000
   
-  // Filter presses to only include those within the last 10 seconds
-  const recentPresses = state.buttonPresses.filter(time => time >= tenSecondsAgo)
+  // Filter presses to only include those within the last 30 seconds
+  const recentPresses = state.buttonPresses.filter(time => time >= thirtySecondsAgo)
   
   if (recentPresses.length < 2) {
     state.currentBPM = 0
@@ -94,10 +98,24 @@ function updateBPM(bpmValueElement: HTMLElement) {
     return
   }
   
-  // Calculate BPM: (number of presses - 1) over 10 seconds * 6
-  // We subtract 1 because the first press starts the timing
-  const pressesInTenSeconds = recentPresses.length - 1
-  const bpm = Math.round(pressesInTenSeconds * 6)
+  // Calculate the time span of our data
+  const oldestPress = recentPresses[0]
+  const newestPress = recentPresses[recentPresses.length - 1]
+  const timeSpanMs = newestPress - oldestPress
+  const timeSpanSeconds = timeSpanMs / 1000
+  
+  // Calculate BPM based on dynamic sampling window
+  let bpm: number
+  
+  if (timeSpanSeconds >= 30) {
+    // If we have more than 30 seconds of data, use last 30 seconds and multiply by 2
+    const pressesInWindow = recentPresses.length - 1 // Subtract 1 because first press starts timing
+    bpm = Math.round(pressesInWindow * 2)
+  } else {
+    // If we have n seconds of data, multiply by 60/n
+    const pressesInWindow = recentPresses.length - 1 // Subtract 1 because first press starts timing
+    bpm = Math.round(pressesInWindow * (60 / timeSpanSeconds))
+  }
   
   state.currentBPM = bpm
   bpmValueElement.textContent = bpm.toString()
