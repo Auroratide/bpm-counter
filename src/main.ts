@@ -23,13 +23,14 @@ const app = document.getElementById('app')
 if (app) {
   app.innerHTML = `
     <div class="container">
-      <h1>BPM Counter</h1>
-      <p>Tap the button to measure your heart rate</p>
-      <button id="bpm-button" class="bpm-button" aria-label="Tap Here">
-        Tap Here
+      <h1>Your Heartrate</h1>
+      <p>Tap the button to your pulse to measure your BPM.</p>
+      <button id="bpm-button" class="bpm-button heart-button" aria-label="Tap to measure heartrate">
+        ♥
       </button>
       <div id="bpm-display" class="bpm-display">
-        <span id="bpm-value">0</span> BPM
+        <label for="bpm-value">BPM</label>
+        <output id="bpm-value" aria-live="polite">--</output>
       </div>
     </div>
   `
@@ -49,6 +50,20 @@ function setupBPMCounter() {
 
 function handleButtonPress(bpmValueElement: HTMLElement) {
   const now = Date.now()
+  const button = document.getElementById('bpm-button')
+  
+  // Add pulse animation effect
+  if (button) {
+    button.classList.add('pulse')
+    setTimeout(() => {
+      button.classList.remove('pulse')
+    }, 600)
+  }
+  
+  // Vibrate on mobile devices (very brief)
+  if ('vibrator' in navigator || 'vibrate' in navigator) {
+    navigator.vibrate?.(50) // 50ms vibration
+  }
   
   if (!state.isActive) {
     // First press - start measuring
@@ -82,7 +97,7 @@ function handleButtonPress(bpmValueElement: HTMLElement) {
 function updateBPM(bpmValueElement: HTMLElement) {
   if (!state.isActive || state.buttonPresses.length < 2) {
     state.currentBPM = 0
-    bpmValueElement.textContent = '0'
+    bpmValueElement.textContent = '--'
     return
   }
   
@@ -94,7 +109,7 @@ function updateBPM(bpmValueElement: HTMLElement) {
   
   if (recentPresses.length < 2) {
     state.currentBPM = 0
-    bpmValueElement.textContent = '0'
+    bpmValueElement.textContent = '--'
     return
   }
   
@@ -118,7 +133,7 @@ function updateBPM(bpmValueElement: HTMLElement) {
   }
   
   state.currentBPM = bpm
-  bpmValueElement.textContent = bpm.toString()
+  bpmValueElement.textContent = bpm > 0 ? bpm.toString() : '--'
 }
 
 function stopMeasuring(bpmValueElement: HTMLElement) {
@@ -128,7 +143,7 @@ function stopMeasuring(bpmValueElement: HTMLElement) {
   state.currentBPM = 0
   state.timeoutId = null
   
-  bpmValueElement.textContent = '0'
+  bpmValueElement.textContent = '--'
 }
 
 // Register service worker for PWA functionality
