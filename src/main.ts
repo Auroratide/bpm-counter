@@ -130,3 +130,16 @@ function stopMeasuring(bpmValueElement: HTMLElement) {
   
   bpmValueElement.textContent = '0'
 }
+
+// Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((registration) => {
+        console.log('[Service Worker] Registered successfully:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('[Service Worker] Registration failed:', error);
+      });
+  });
+}
