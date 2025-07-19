@@ -1,7 +1,27 @@
+/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* Color scheme using provided OKLCH values */
+:root {
+  /* Primary (blue) */
+  --primary-main: oklch(55% 0.119 250);
+  --primary-highlight: oklch(64% 0.142 250);
+  
+  /* Secondary (red) */
+  --secondary-main: oklch(50% 0.11 30);
+  --secondary-highlight: oklch(63% 0.13 30.5);
+  
+  /* Dark (navy) */
+  --dark-main: oklch(22% 0.021 255);
+  --dark-highlight: oklch(27% 0.02 255);
+  
+  /* Light (white) */
+  --light-main: oklch(80% 0.005 255);
+  --light-highlight: oklch(97.5% 0.005 255);
 }
 
 body {
@@ -10,8 +30,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--dark-main);
+  color: var(--light-main);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -22,66 +42,178 @@ body {
   text-align: center;
   max-width: 600px;
   padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--dark-highlight);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: var(--light-highlight);
+  font-weight: 600;
 }
 
 p {
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  color: #555;
+  color: var(--light-main);
+  opacity: 0.9;
 }
 
-.bpm-button {
+/* Heart-shaped button */
+.heart-button {
   display: block;
   width: 200px;
-  height: 200px;
+  height: 180px;
   margin: 0 auto 2rem;
   border: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-  font-family: inherit;
+  background: transparent;
+  color: var(--secondary-main);
+  font-size: 120px;
+  line-height: 1;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  position: relative;
+  filter: drop-shadow(0 4px 20px rgba(231, 76, 60, 0.3));
 }
 
-.bpm-button:hover {
-  background: linear-gradient(135deg, #2980b9, #3498db);
-  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-  transform: translateY(-2px);
+.heart-button:hover {
+  color: var(--secondary-highlight);
+  transform: scale(1.05);
+  filter: drop-shadow(0 6px 24px rgba(231, 76, 60, 0.4));
 }
 
-.bpm-button:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+.heart-button:active {
+  transform: scale(0.95);
 }
 
-.bpm-button:focus {
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3), 0 0 0 3px rgba(52, 152, 219, 0.2);
+.heart-button:focus {
+  outline: 3px solid var(--primary-main);
+  outline-offset: 4px;
+  border-radius: 50%;
 }
 
+/* Pulse animation */
+.heart-button.pulse {
+  animation: pulse-animation 0.6s ease-out;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 4px 20px rgba(231, 76, 60, 0.3));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 40px rgba(231, 76, 60, 0.8));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 4px 20px rgba(231, 76, 60, 0.3));
+  }
+}
+
+/* Add a pulse ring effect */
+.heart-button.pulse::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160%;
+  height: 160%;
+  border: 3px solid var(--secondary-main);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse-ring 0.6s ease-out;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* BPM Display */
 .bpm-display {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
   font-size: 2.5rem;
   font-weight: bold;
-  color: #2c3e50;
   margin-top: 1rem;
 }
 
+.bpm-display label {
+  color: var(--light-main);
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
 #bpm-value {
-  color: #e74c3c;
-  text-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
+  color: var(--secondary-main);
+  text-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  min-width: 3ch;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  .heart-button {
+    width: 160px;
+    height: 144px;
+    font-size: 96px;
+  }
+  
+  .bpm-display {
+    font-size: 2rem;
+  }
+  
+  .bpm-display label {
+    font-size: 1.5rem;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .heart-button {
+    transition: none;
+  }
+  
+  .heart-button.pulse {
+    animation: none;
+  }
+  
+  .heart-button.pulse::before {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .heart-button {
+    outline: 2px solid currentColor;
+  }
+  
+  #bpm-value {
+    text-shadow: none;
+  }
 }
