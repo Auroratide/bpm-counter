@@ -1,0 +1,27 @@
+{
+  "name": "BPM Counter",
+  "short_name": "BPM Counter",
+  "description": "BPM Counter is a website that measures your heart rate",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "scope": "./",
+  "lang": "en",
+  "categories": ["health", "utilities"],
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "./icon-512x512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
