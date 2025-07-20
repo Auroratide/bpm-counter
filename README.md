@@ -1,5 +1,13 @@
 # BPM Counter
 
+This repo is an experiment giving AI full reign over the implementation of a simple product, with requirements drafted by a human via issues.
+
+Used Claude Code.
+
+View the app here: **https://auroratide.github.io/bpm-counter**
+
+## What the app is
+
 BPM Counter is a website that measures your heart rate. Here's what you do:
 
 1. Find your pulse by pressing two of your fingers against your neck.
