@@ -26,7 +26,7 @@ if (app) {
       <h1>Your Heartrate</h1>
       <p>Tap the button to your pulse to measure your BPM.</p>
       <button id="bpm-button" class="bpm-button heart-button" aria-label="Tap to measure heartrate">
-        Tap Here
+        <span>Tap Here</span>
       </button>
       <div id="bpm-display" class="bpm-display">
         <label for="bpm-value">BPM</label>
