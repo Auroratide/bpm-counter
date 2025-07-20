@@ -52,12 +52,30 @@ function handleButtonPress(bpmValueElement: HTMLElement) {
   const now = Date.now()
   const button = document.getElementById('bpm-button')
   
-  // Add pulse animation effect
+  // Calculate animation duration based on BPM (max 60/BPM seconds, min 0.3s, max 2s)
+  let animationDuration = 0.6 // Default 0.6s
+  if (state.currentBPM > 0) {
+    animationDuration = Math.min(Math.max(60 / state.currentBPM, 0.3), 2)
+  }
+  
+  // Force restart pulse animation effect
   if (button) {
+    // Remove the class first to restart animation if it's already playing
+    button.classList.remove('pulse')
+    
+    // Set the animation duration as CSS custom property
+    button.style.setProperty('--pulse-duration', `${animationDuration}s`)
+    
+    // Force a reflow to ensure the class removal takes effect
+    button.offsetHeight
+    
+    // Add the pulse class to start the animation
     button.classList.add('pulse')
+    
+    // Remove the class after the animation completes
     setTimeout(() => {
       button.classList.remove('pulse')
-    }, 600)
+    }, animationDuration * 1000)
   }
   
   // Vibrate on mobile devices (very brief)
