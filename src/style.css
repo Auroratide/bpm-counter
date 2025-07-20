@@ -80,6 +80,7 @@ p {
   position: relative;
   filter: drop-shadow(0 4px 20px rgba(231, 76, 60, 0.3));
   border-radius: 50%;
+  user-select: none;
 }
 
 /* Heart shape using pseudo-element */
