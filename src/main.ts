@@ -7,6 +7,7 @@ interface BPMState {
   buttonPresses: number[]
   currentBPM: number
   timeoutId: number | null
+  pulseTimeoutId: number | null
 }
 
 const state: BPMState = {
@@ -14,7 +15,8 @@ const state: BPMState = {
   startTime: null,
   buttonPresses: [],
   currentBPM: 0,
-  timeoutId: null
+  timeoutId: null,
+  pulseTimeoutId: null
 }
 
 // Get the app element
@@ -60,6 +62,12 @@ function handleButtonPress(bpmValueElement: HTMLElement) {
   
   // Force restart pulse animation effect
   if (button) {
+    // Clear any existing pulse timeout
+    if (state.pulseTimeoutId) {
+      clearTimeout(state.pulseTimeoutId)
+      state.pulseTimeoutId = null
+    }
+    
     // Remove the class first to restart animation if it's already playing
     button.classList.remove('pulse')
     
@@ -73,8 +81,9 @@ function handleButtonPress(bpmValueElement: HTMLElement) {
     button.classList.add('pulse')
     
     // Remove the class after the animation completes
-    setTimeout(() => {
+    state.pulseTimeoutId = setTimeout(() => {
       button.classList.remove('pulse')
+      state.pulseTimeoutId = null
     }, animationDuration * 1000)
   }
   
@@ -160,6 +169,12 @@ function stopMeasuring(bpmValueElement: HTMLElement) {
   state.buttonPresses = []
   state.currentBPM = 0
   state.timeoutId = null
+  
+  // Clear pulse timeout if active
+  if (state.pulseTimeoutId) {
+    clearTimeout(state.pulseTimeoutId)
+    state.pulseTimeoutId = null
+  }
   
   bpmValueElement.textContent = '--'
 }
